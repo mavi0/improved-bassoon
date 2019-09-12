@@ -1,0 +1,1 @@
+killall iperf3
