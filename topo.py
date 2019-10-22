@@ -49,7 +49,7 @@ def sshd( network, cmd='/usr/sbin/sshd', opts='-D',
        routes: Mininet host networks to route to (10.0/24)
        switch: Mininet switch to connect to root namespace (s1)"""
     if not switch:
-        switch = network[ 'ssh-switch' ]  # switch to use
+        switch = network[ 's1' ]  # switch to use
     if not routes:
         routes = [ '10.0.0.0/24' ]
     connectToRootNS( network, switch, ip, routes )
@@ -57,7 +57,7 @@ def sshd( network, cmd='/usr/sbin/sshd', opts='-D',
         host.cmd( cmd + ' ' + opts + '&' )
     info( "*** Waiting for ssh daemons to start\n" )
     for server in network.hosts:
-        waitListening( server=server, port=22, timeout=5 )
+        waitListening( server=server, port=6767, timeout=5 )
 
     info( "\n*** Hosts are running sshd at the following addresses:\n" )
     for host in network.hosts:
@@ -69,7 +69,7 @@ def sshd( network, cmd='/usr/sbin/sshd', opts='-D',
     network.stop()
 
 if __name__ == '__main__':   
-    net = Mininet(controller=RemoteController)
+    net = Mininet(controller=RemoteController, link=TCLink)
     net.addController('c0', controller=RemoteController, ip="127.0.0.1", port=6633)
 
     info( '*** Adding Hosts\n' )
@@ -82,14 +82,16 @@ if __name__ == '__main__':
     s1 = net.addSwitch('s1')
     s2 = net.addSwitch('s2')
     s3 = net.addSwitch('s3')
+    
+    bandwidth = 1000
 
     info( '*** Creating links\n' )
     net.addLink(h1, s1)
     net.addLink(h2, s1)
     net.addLink(h3, s2)
     net.addLink(h4, s2)
-    net.addLink(s1, s2)
-    net.addLink(s2, s3)
-    net.addLink(s3, s1)
+    net.addLink(s1, s2, bw=1000)
+    net.addLink(s2, s3, bw=1000)
+    net.addLink(s3, s1, bw=1000)
 
     sshd( net )
