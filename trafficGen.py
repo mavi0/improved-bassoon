@@ -20,7 +20,7 @@ def goodbye():
         run_command(HOSTS[i], "stopServer.sh")   
 
 def run_command(host, command):
-    subprocess.call("ssh sdn@" + host + " -o StrictHostKeyChecking=no -t 'source ~/.bash_profile && cd traffic && bash " + command + "'", shell=True, stdout=subprocess.PIPE)
+    subprocess.call("ssh sdn@" + host + " -o StrictHostKeyChecking=no -p 6767 -t 'cd improved-bassoon && bash " + command + "'", shell=True, stdout=subprocess.PIPE)
 
 def start_servers(hosts):
     # Start iperf3 server deamons on all hosts
@@ -34,19 +34,24 @@ def default_iperf():
 
 def iperf_exec(speed):
     threads = []
-
+    print(len(IPERF_HOSTS))
     for i in range(len(IPERF_HOSTS)):
-        try:
-            print(OKBLUE + "Speed: " + str(int(speed)/1000000) + "Mbps" + ENDC)
-            thread = threading.Thread(target=run_command, args=(IPERF_HOSTS[i], "startIperf.sh " + IPERF_SERVER[i] + " " + str(DURATION) + " " + speed))
-            thread.daemon = True                          
-            thread.start()
-        except:
-            print("unable to start thread")
+        try:    
+            try:
+                print(OKBLUE + "Speed: " + str(int(speed)/1000000) + "Mbps" + ENDC)
+                threads.append(threading.Thread(target=run_command, args=(IPERF_HOSTS[i], "startIperf.sh " + IPERF_SERVER[i] + " " + str(DURATION) + " " + speed)))
+                threads[i].daemon = True                          
+                threads[i].start()
+            except Exception as e:
+                print(e)
+                print("unable to start thread")
+        except KeyboardInterrupt:
+            for i in range(len(IPERF_HOSTS)):
+                threads[i].join()
 
     time.sleep(DURATION + 1)
-    for thread in threads:
-        thread.join()
+    for i in range(len(IPERF_HOSTS)):
+        threads[i].join()
 
     subprocess.call("stty sane", shell=True)
 
@@ -103,4 +108,3 @@ if __name__ == "__main__":
    main()
 
 
-#, '-t', '"export PATH=/usr/local/jdk/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/local/sbin:usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/opt/cpanel/composer/bin:/usr/local/easy/bin:/usr/local/bin:/usr/X11R6/bin:/root/bin && sleep 1 && cd traffic && ls"'
