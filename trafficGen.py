@@ -29,7 +29,10 @@ def start_servers(hosts):
         run_command(hosts[i], "startServer.sh")
 
 def default_iperf():
-    print(OKGREEN + "Starting default iperf sessions on 2 threads [10.0.0.1 -> 10.0.0.3] and [10.0.0.2 -> 10.0.0.4] for " + str(DURATION) + " seconds" + ENDC)
+    print(OKGREEN + "Starting default iperf sessions on " + str(len(IPERF_HOSTS)) + " threads")
+    for host, server in zip(IPERF_HOSTS, IPERF_SERVER):
+        print("[" + host + "] -> [" + server + "]")
+    print("for " + str(DURATION) + " seconds" + ENDC)
     iperf_exec(GIGABIT)
 
 def iperf_exec(speed):

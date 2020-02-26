@@ -76,22 +76,63 @@ if __name__ == '__main__':
     h1 = net.addHost( 'h1', ip='10.0.0.1', mac='00:00:00:00:00:01' )
     h2 = net.addHost( 'h2', ip='10.0.0.2', mac='00:00:00:00:00:02' )
     h3 = net.addHost( 'h3', ip='10.0.0.3', mac='00:00:00:00:00:03' )
-    h4 = net.addHost( 'h4', ip='10.0.0.4', mac='00:00:00:00:00:04' )
+    # h4 = net.addHost( 'h4', ip='10.0.0.4', mac='00:00:00:00:00:04' )
+    # h5 = net.addHost( 'h5', ip='10.0.0.5', mac='00:00:00:00:00:05' )
+    # h6 = net.addHost( 'h6', ip='10.0.0.6', mac='00:00:00:00:00:06' )
+    # h7 = net.addHost( 'h7', ip='10.0.0.7', mac='00:00:00:00:00:07' )
 
     info( '*** Adding switches\n' )
     s1 = net.addSwitch('s1')
     s2 = net.addSwitch('s2')
     s3 = net.addSwitch('s3')
+    s4 = net.addSwitch('s4')
+    s5 = net.addSwitch('s5')
+    s6 = net.addSwitch('s6')
+    s7 = net.addSwitch('s7')
+    s8 = net.addSwitch('s8')
+    s9 = net.addSwitch('s9')
+    s10 = net.addSwitch('s10')
+    s11 = net.addSwitch('s11')
     
     bandwidth = 1000
 
     info( '*** Creating links\n' )
-    net.addLink(h1, s1)
-    net.addLink(h2, s1)
-    net.addLink(h3, s2)
-    net.addLink(h4, s2)
-    net.addLink(s1, s2, bw=1000)
-    net.addLink(s2, s3, bw=1000)
-    net.addLink(s3, s1, bw=1000)
+    net.addLink(h1, s1, bw=bandwidth)
+    net.addLink(h2, s2, bw=bandwidth)
+    # net.addLink(h3, s1, bw=bandwidth)
+    # net.addLink(h4, s2, bw=bandwidth)
+    # net.addLink(h5, s2, bw=bandwidth)
+    # net.addLink(h6, s2, bw=bandwidth)
+    net.addLink(h3, s9, bw=bandwidth)
+
+    # Access Nodes
+    net.addLink(s1, s3, bw=bandwidth)
+    net.addLink(s1, s4, bw=bandwidth)
+    net.addLink(s2, s5, bw=bandwidth)
+    net.addLink(s2, s6, bw=bandwidth)
+
+    # Met 1
+    net.addLink(s3, s7, bw=bandwidth)
+    net.addLink(s3, s8, bw=bandwidth)
+    net.addLink(s4, s8, bw=bandwidth)
+    net.addLink(s4, s9, bw=bandwidth)
+
+    # Met 2
+    net.addLink(s5, s9, bw=bandwidth)
+    net.addLink(s5, s10, bw=bandwidth)
+    net.addLink(s6, s10, bw=bandwidth)
+    net.addLink(s6, s11, bw=bandwidth)
+    
+    # Core Mesh
+    net.addLink(s7, s8, bw=bandwidth)
+    net.addLink(s7, s9, bw=bandwidth)
+    net.addLink(s7, s10, bw=bandwidth)
+    net.addLink(s7, s11, bw=bandwidth)
+    # net.addLink(s8, s9, bw=bandwidth)
+    # net.addLink(s8, s10, bw=bandwidth)
+    # net.addLink(s8, s11, bw=bandwidth)
+    # net.addLink(s9, s10, bw=bandwidth)
+    # net.addLink(s9, s11, bw=bandwidth)
+    # net.addLink(s10, s11, bw=bandwidth)
 
     sshd( net )
