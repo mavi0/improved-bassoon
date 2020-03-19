@@ -1,0 +1,3 @@
+sudo docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm kylemanna/openvpn ovpn_genconfig -s 192.168.44.0/24 -e 'client-to-client' -e push "route 192.168.44.0 255.255.255.0" -u udp://164.132.43.137
+sudo docker run -v $OVPN_DATA:/etc/openvpn --log-driver=none --rm -it kylemanna/openvpn ovpn_initpki
+osudo docker run --restart unless-stopped -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN kylemanna/openvpn
