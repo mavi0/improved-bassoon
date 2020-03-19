@@ -2,6 +2,7 @@
                                                                                                                                                                                                                                                                                           
 from mininet.topo import Topo
 from mininet.cli import CLI
+from mininet.rest import REST
 from mininet.net import Mininet
 from mininet.node import RemoteController
 from mininet.link import TCLink
@@ -9,6 +10,7 @@ from mininet.log import lg, info
 from mininet.node import Node
 from mininet.topolib import TreeTopo
 from mininet.util import waitListening
+from mininet.node import OVSKernelSwitch
 
 # class CustomTopo(Topo):
 #     def __init__(self, bw=1e3, **opts):
@@ -76,63 +78,79 @@ if __name__ == '__main__':
     h1 = net.addHost( 'h1', ip='10.0.0.1', mac='00:00:00:00:00:01' )
     h2 = net.addHost( 'h2', ip='10.0.0.2', mac='00:00:00:00:00:02' )
     h3 = net.addHost( 'h3', ip='10.0.0.3', mac='00:00:00:00:00:03' )
-    # h4 = net.addHost( 'h4', ip='10.0.0.4', mac='00:00:00:00:00:04' )
-    # h5 = net.addHost( 'h5', ip='10.0.0.5', mac='00:00:00:00:00:05' )
-    # h6 = net.addHost( 'h6', ip='10.0.0.6', mac='00:00:00:00:00:06' )
-    # h7 = net.addHost( 'h7', ip='10.0.0.7', mac='00:00:00:00:00:07' )
+    h4 = net.addHost( 'h4', ip='10.0.0.4', mac='00:00:00:00:00:04' )
+    h5 = net.addHost( 'h5', ip='10.0.0.5', mac='00:00:00:00:00:05' )
+    h6 = net.addHost( 'h6', ip='10.0.0.6', mac='00:00:00:00:00:06' )
+    h7 = net.addHost( 'h7', ip='10.0.0.7', mac='00:00:00:00:00:07' )
+    h8 = net.addHost( 'h8', ip='10.0.0.8', mac='00:00:00:00:00:08' )
+    h9 = net.addHost( 'h9', ip='10.0.0.9', mac='00:00:00:00:00:09' )
+
 
     info( '*** Adding switches\n' )
-    s1 = net.addSwitch('s1')
-    s2 = net.addSwitch('s2')
-    s3 = net.addSwitch('s3')
-    s4 = net.addSwitch('s4')
-    s5 = net.addSwitch('s5')
-    s6 = net.addSwitch('s6')
-    s7 = net.addSwitch('s7')
-    s8 = net.addSwitch('s8')
-    s9 = net.addSwitch('s9')
-    s10 = net.addSwitch('s10')
-    s11 = net.addSwitch('s11')
-    
-    bandwidth = 1000
+    s1 = net.addSwitch( 's1', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s2 = net.addSwitch( 's2', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s3 = net.addSwitch( 's3', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s4 = net.addSwitch( 's4', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s5 = net.addSwitch( 's5', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s6 = net.addSwitch( 's6', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s7 = net.addSwitch( 's7', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s8 = net.addSwitch( 's8', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s9 = net.addSwitch( 's9', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s10 = net.addSwitch('s10', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s11 = net.addSwitch('s11', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s12 = net.addSwitch('s12', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s13 = net.addSwitch('s13', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+    s14 = net.addSwitch('s14', cls=OVSKernelSwitch, batch=True, failMode="standalone")
+
+
+    bandwidth = 100
+    core_bw = 1000
 
     info( '*** Creating links\n' )
     net.addLink(h1, s1, bw=bandwidth)
     net.addLink(h2, s2, bw=bandwidth)
-    # net.addLink(h3, s1, bw=bandwidth)
-    # net.addLink(h4, s2, bw=bandwidth)
-    # net.addLink(h5, s2, bw=bandwidth)
-    # net.addLink(h6, s2, bw=bandwidth)
-    net.addLink(h3, s9, bw=bandwidth)
+    net.addLink(h3, s3, bw=bandwidth)
+    net.addLink(h4, s4, bw=bandwidth)
+    net.addLink(h5, s5, bw=bandwidth)
+    net.addLink(h6, s6, bw=bandwidth)
+    net.addLink(h7, s12, bw=core_bw)
+    net.addLink(h8, s13, bw=core_bw)
+    net.addLink(h9, s14, bw=core_bw)
 
     # Access Nodes
-    net.addLink(s1, s3, bw=bandwidth)
-    net.addLink(s1, s4, bw=bandwidth)
-    net.addLink(s2, s5, bw=bandwidth)
-    net.addLink(s2, s6, bw=bandwidth)
-
-    # Met 1
-    net.addLink(s3, s7, bw=bandwidth)
-    net.addLink(s3, s8, bw=bandwidth)
-    net.addLink(s4, s8, bw=bandwidth)
-    net.addLink(s4, s9, bw=bandwidth)
-
-    # Met 2
-    net.addLink(s5, s9, bw=bandwidth)
+    net.addLink(s1, s7, bw=bandwidth)
+    net.addLink(s1, s8, bw=bandwidth)
+    net.addLink(s2, s7, bw=bandwidth)
+    net.addLink(s2, s8, bw=bandwidth)
+    net.addLink(s2, s9, bw=bandwidth)
+    net.addLink(s3, s9, bw=bandwidth)
+    net.addLink(s3, s10, bw=bandwidth)
+    net.addLink(s4, s10, bw=bandwidth)
+    net.addLink(s5, s11, bw=bandwidth)
+    net.addLink(s6, s11, bw=bandwidth)
     net.addLink(s5, s10, bw=bandwidth)
     net.addLink(s6, s10, bw=bandwidth)
-    net.addLink(s6, s11, bw=bandwidth)
-    
-    # Core Mesh
-    net.addLink(s7, s8, bw=bandwidth)
-    net.addLink(s7, s9, bw=bandwidth)
-    net.addLink(s7, s10, bw=bandwidth)
-    net.addLink(s7, s11, bw=bandwidth)
-    # net.addLink(s8, s9, bw=bandwidth)
-    # net.addLink(s8, s10, bw=bandwidth)
-    # net.addLink(s8, s11, bw=bandwidth)
-    # net.addLink(s9, s10, bw=bandwidth)
-    # net.addLink(s9, s11, bw=bandwidth)
-    # net.addLink(s10, s11, bw=bandwidth)
 
-    sshd( net )
+    # Met
+    net.addLink(s7, s12, bw=bandwidth)
+    net.addLink(s8, s12, bw=bandwidth)
+    net.addLink(s9, s12, bw=bandwidth)
+    net.addLink(s10, s12, bw=bandwidth)
+    net.addLink(s11, s12, bw=bandwidth)
+
+    net.addLink(s9, s13, bw=bandwidth)
+    net.addLink(s10, s13, bw=bandwidth)
+    net.addLink(s11, s13, bw=bandwidth)
+    net.addLink(s11, s14, bw=bandwidth)
+
+    # Core
+    net.addLink(s12, s13, bw=core_bw)
+    net.addLink(s12, s14, bw=core_bw)
+    net.addLink(s13, s14, bw=core_bw)
+    
+    net.start()
+    REST( net )
+    CLI( net )
+    net.stop()
+
+    # sshd( net )
