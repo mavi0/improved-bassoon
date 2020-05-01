@@ -125,6 +125,7 @@ if __name__ == '__main__':
     net.addLink(s2, s9, bw=bandwidth)
     net.addLink(s3, s9, bw=bandwidth)
     net.addLink(s3, s10, bw=bandwidth)
+    net.addLink(s4, s9, bw=bandwidth)
     net.addLink(s4, s10, bw=bandwidth)
     net.addLink(s5, s11, bw=bandwidth)
     net.addLink(s6, s11, bw=bandwidth)
